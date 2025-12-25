@@ -159,7 +159,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer IGAAMTlh0xD5VBZAFlIQ01ncG5HZAi02eVkzTnpjZA0t3RzUyTUsyQ0pTTXNVYmQ4dGdDcjc4Y3l0NlljVEZArYXlDZAktTOXhUWWdmN1IzZAFAtdUNyUEFsd1g1V3BMUFNqQ2FhRGFsNHc0ak1PeWczTWRPeE5mRm0wN2VVWGRYMjF6VQZDZD"
+              "value": "Bearer "
             }
           ]
         },
@@ -197,7 +197,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer IGAAMTlh0xD5VBZAFlIQ01ncG5HZAi02eVkzTnpjZA0t3RzUyTUsyQ0pTTXNVYmQ4dGdDcjc4Y3l0NlljVEZArYXlDZAktTOXhUWWdmN1IzZAFAtdUNyUEFsd1g1V3BMUFNqQ2FhRGFsNHc0ak1PeWczTWRPeE5mRm0wN2VVWGRYMjF6VQZDZD"
+              "value": "Bearer "
             }
           ]
         },
