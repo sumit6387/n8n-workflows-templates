@@ -1,0 +1,422 @@
+{
+  "name": "Automate Instagram Account To Tech Image Post",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Research and identify one trending AI topic along with a relevant AI tool by utilizing 2–3 sources from the provided options (choose from: Product Hunt AI category, Futurepedia, There’s An AI For That, GitHub Trending AI repos, Instagram Reels trending hashtags, YouTube Shorts trending AI videos, or Twitter/X trending AI keywords; you may also use APIs like SerpAPI, Apify, or RapidAPI to find trends). Begin by reasoning through your source selection, then gather evidence to support your choice of a viral or trending AI/Tech content idea. Summarize your findings by presenting the AI topic, naming one associated AI tool, and briefly explaining why they are currently viral or trending, all in a concise paragraph.\n\nAlso give me caption that i can use to add for instagram that i for same post include trending hastags in it  as well.\n\nDon't include tools whose name are below\n{{ $('Get row(s)').all().map(item => item.json.toolName)?.toJsonString() }}\n\nGive me the data in below json format\n\n{\n  \"topic\": \"\",\n  \"toolName\": \"\",\n  \"whyTrending\": \"\",\n  'instagram_caption': \"\"\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        496,
+        -32
+      ],
+      "id": "26c22377-2852-4c42-a740-446aa8f3f705",
+      "name": "AI Tool Discovery",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"topic\": \"\",\n  \"toolName\": \"\",\n  \"whyTrending\": \"\",\n  \"instagram_caption\": \"\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        192
+      ],
+      "id": "8f018671-4c3f-42e0-8684-7647cc2b10a0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        192
+      ],
+      "id": "0776c63c-e6ab-4773-b4d5-0ec343504582",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4is91IE0lBpX1ptJ",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image (Nano Banana)"
+        },
+        "prompt": "=Create a high-quality Instagram post (1080x1080 or 1080x1350) for a tech/AI topic. \nThe main focus is on \"{{ $json.output.topic }}\" and the tool \"{{ $json.output.toolName }}\". \nInclude futuristic digital elements like holographic interfaces, AI icons, floating data streams, and glowing geometric shapes around a tablet or central display. \nUse a modern, sleek color palette with blues, whites, and subtle neon highlights. \nIncorporate text into the design in bold, clean typography: \nHeadline: \"{{ $json.output.topic }}\" \nSubheadline: \"{{ $json.output.toolName }}\" \nArrange text and graphics in a visually balanced way like a professional Instagram post. \nAdd abstract polygons, digital grids, or network lines in the background to evoke technology and innovation. \nThe design should be visually striking, professional, and appealing to marketers and tech enthusiasts, reflecting why \"{{ $json.output.toolName }}\" is trending: \"{{ $json.output.whyTrending }}\".\n",
+        "options": {
+          "binaryPropertyOutput": "data"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -32
+      ],
+      "id": "1bb2da25-8f79-47ec-81fc-84c2475f80db",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zoP1LBUxwZJMMpJ2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "OvluoGyJA7XMenH4",
+          "mode": "list",
+          "cachedResultName": "tech_ideas_posted",
+          "cachedResultUrl": "/projects/g72x9L4snP4Gns9D/datatables/OvluoGyJA7XMenH4"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -32
+      ],
+      "id": "8176a715-af32-4aff-a4fb-cb986d90222e",
+      "name": "Get row(s)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "OvluoGyJA7XMenH4",
+          "mode": "list",
+          "cachedResultName": "tech_ideas_posted",
+          "cachedResultUrl": "/projects/g72x9L4snP4Gns9D/datatables/OvluoGyJA7XMenH4"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "toolName": "={{ $('AI Tool Discovery').item.json.output.toolName }}"
+          },
+          "matchingColumns": [
+            "toolName"
+          ],
+          "schema": [
+            {
+              "id": "toolName",
+              "displayName": "toolName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -32
+      ],
+      "id": "8a45f032-189f-40bf-ae5e-e54f477fff9a",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/{{ \"v15.0\" }}/17841478699445840/media",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer IGAAMTlh0xD5VBZAFlIQ01ncG5HZAi02eVkzTnpjZA0t3RzUyTUsyQ0pTTXNVYmQ4dGdDcjc4Y3l0NlljVEZArYXlDZAktTOXhUWWdmN1IzZAFAtdUNyUEFsd1g1V3BMUFNqQ2FhRGFsNHc0ak1PeWczTWRPeE5mRm0wN2VVWGRYMjF6VQZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $('HTTP Request2').first().json.url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('AI Tool Discovery').item.json.output?.instagram_caption ?? \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1520,
+        -32
+      ],
+      "id": "947f77c2-cfaa-4fe1-9f10-7eb8716b457b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/{{ \"v15.0\" }}/17841478699445840/media_publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer IGAAMTlh0xD5VBZAFlIQ01ncG5HZAi02eVkzTnpjZA0t3RzUyTUsyQ0pTTXNVYmQ4dGdDcjc4Y3l0NlljVEZArYXlDZAktTOXhUWWdmN1IzZAFAtdUNyUEFsd1g1V3BMUFNqQ2FhRGFsNHc0ak1PeWczTWRPeE5mRm0wN2VVWGRYMjF6VQZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1936,
+        -32
+      ],
+      "id": "f7adb1c8-11c6-49ac-b45f-0f59f54aabf8",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/dmuvvpggo/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "=data"
+            },
+            {
+              "name": "upload_preset",
+              "value": "ug1hcp1o"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1104,
+        -32
+      ],
+      "id": "816a34da-556f-4852-aa01-84a22183be7d",
+      "name": "HTTP Request2",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NVWEyog16qCYRQ7o",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1728,
+        -32
+      ],
+      "id": "632bceb5-9e05-4be6-953a-c48af6934c4c",
+      "name": "Wait",
+      "webhookId": "4ce12e10-6721-444f-b627-4554b73b4da1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 11,18,21 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "512de0a8-128a-4df2-b19f-c847ac110aec",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Tool Discovery",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Tool Discovery",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Tool Discovery": {
+      "main": [
+        [
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "AI Tool Discovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1b2abfb3-5ae5-4d6a-9403-940ae08510af",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c46e272a890a786a022f1682e7f00b9d7b84844adcb9c7f5f43d70380eee515f"
+  },
+  "id": "2xYr5f6ACqsEou0o",
+  "tags": []
+}
